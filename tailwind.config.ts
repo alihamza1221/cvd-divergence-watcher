@@ -57,6 +57,11 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        matrix: {
+          bullish: "hsl(var(--matrix-bullish))",
+          bearish: "hsl(var(--matrix-bearish))",
+          empty: "hsl(var(--matrix-empty))",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
