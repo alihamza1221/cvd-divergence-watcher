@@ -1,7 +1,12 @@
 import React from 'react';
-import { Filter, ChevronDown, Settings } from 'lucide-react';
+import { ChevronDown, Settings } from 'lucide-react';
 import { useAlerts, SYMBOLS, TIMEFRAMES } from '@/contexts/AlertContext';
 import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 interface MatrixHeaderProps {
   onToggleSettings: () => void;
@@ -34,16 +39,47 @@ export const MatrixHeader: React.FC<MatrixHeaderProps> = ({ onToggleSettings, sh
           {formatDate(currentTime)}
         </div>
 
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              Symbols ({SYMBOLS.length})
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 p-2" align="end">
+            <div className="space-y-1">
+              {SYMBOLS.map((symbol) => (
+                <div
+                  key={symbol}
+                  className="px-3 py-2 text-sm rounded-md bg-muted/50 text-foreground"
+                >
+                  {symbol}
+                </div>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
 
-        <Button variant="outline" size="sm" className="gap-2">
-          Symbols ({SYMBOLS.length})
-          <ChevronDown className="h-4 w-4" />
-        </Button>
-
-        <Button variant="outline" size="sm" className="gap-2">
-          Timeframes ({TIMEFRAMES.length})
-          <ChevronDown className="h-4 w-4" />
-        </Button>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              Timeframes ({TIMEFRAMES.length})
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-32 p-2" align="end">
+            <div className="space-y-1">
+              {TIMEFRAMES.map((tf) => (
+                <div
+                  key={tf}
+                  className="px-3 py-2 text-sm rounded-md bg-muted/50 text-foreground"
+                >
+                  {tf}
+                </div>
+              ))}
+            </div>
+          </PopoverContent>
+        </Popover>
 
         <Button
           variant={showSettings ? 'secondary' : 'ghost'}
