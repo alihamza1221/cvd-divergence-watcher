@@ -34,9 +34,6 @@ export const MatrixHeader: React.FC<MatrixHeaderProps> = ({ onToggleSettings, sh
           {formatDate(currentTime)}
         </div>
 
-        <Button variant="ghost" size="sm" className="gap-2">
-          <Filter className="h-4 w-4" />
-        </Button>
 
         <Button variant="outline" size="sm" className="gap-2">
           Symbols ({SYMBOLS.length})
