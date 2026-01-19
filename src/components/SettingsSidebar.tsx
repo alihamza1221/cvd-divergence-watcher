@@ -11,6 +11,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+
 const REFRESH_OPTIONS = [
   { value: '5', label: '5 min' },
   { value: '10', label: '10 min' },
@@ -21,6 +23,37 @@ const REFRESH_OPTIONS = [
 
 export const SettingsSidebar: React.FC = () => {
   const { settings, updateSettings } = useAlerts();
+
+  const handleRefreshDurationChange = async (value: string) => {
+    const newDuration = parseInt(value, 10);
+    updateSettings({ refreshDuration: newDuration });
+    
+    // Update backend expiry time
+    try {
+      await fetch(`${BACKEND_URL}/api/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ expiryMinutes: newDuration }),
+      });
+    } catch (err) {
+      console.error('Failed to update backend settings:', err);
+    }
+  };
+
+  const handleTelegramToggle = async (checked: boolean) => {
+    updateSettings({ telegramAlerts: checked });
+    
+    // Update backend Telegram setting
+    try {
+      await fetch(`${BACKEND_URL}/api/settings`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ telegramAlertsEnabled: checked }),
+      });
+    } catch (err) {
+      console.error('Failed to update Telegram setting:', err);
+    }
+  };
 
   return (
     <div className="flex h-full w-64 flex-col border-l border-border bg-sidebar p-4">
@@ -38,7 +71,7 @@ export const SettingsSidebar: React.FC = () => {
           <Switch
             id="telegram-alerts"
             checked={settings.telegramAlerts}
-            onCheckedChange={(checked) => updateSettings({ telegramAlerts: checked })}
+            onCheckedChange={handleTelegramToggle}
           />
         </div>
 
@@ -49,7 +82,7 @@ export const SettingsSidebar: React.FC = () => {
           </Label>
           <Select
             value={settings.refreshDuration.toString()}
-            onValueChange={(value) => updateSettings({ refreshDuration: parseInt(value, 10) })}
+            onValueChange={handleRefreshDurationChange}
           >
             <SelectTrigger id="refresh-duration" className="w-full">
               <SelectValue placeholder="Select duration" />

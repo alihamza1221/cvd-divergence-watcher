@@ -3,23 +3,24 @@ import { MatrixGrid } from '@/components/MatrixGrid';
 import { MatrixHeader } from '@/components/MatrixHeader';
 import { SettingsSidebar } from '@/components/SettingsSidebar';
 import { useAlerts, CVDAlert } from '@/contexts/AlertContext';
-import { supabase } from '@/integrations/supabase/client';
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 
 const Index = () => {
   const [showSettings, setShowSettings] = useState(true);
   const { addAlert } = useAlerts();
 
-  // Fetch alerts from backend on mount and subscribe to updates
+  // Fetch alerts from Node.js backend
   const fetchAlerts = useCallback(async () => {
     try {
-      const { data, error } = await supabase.functions.invoke('cvd-alerts', {
-        method: 'GET',
-      });
-
-      if (error) {
-        console.error('Error fetching alerts:', error);
+      const response = await fetch(`${BACKEND_URL}/api/cvd-alerts`);
+      
+      if (!response.ok) {
+        console.error('Error fetching alerts:', response.statusText);
         return;
       }
+
+      const data = await response.json();
 
       if (data?.alerts) {
         Object.values(data.alerts).forEach((alert: any) => {
@@ -34,8 +35,8 @@ const Index = () => {
   useEffect(() => {
     fetchAlerts();
     
-    // Poll for updates every 30 seconds
-    const interval = setInterval(fetchAlerts, 30000);
+    // Poll for updates every 5 seconds (faster since it's local)
+    const interval = setInterval(fetchAlerts, 5000);
     return () => clearInterval(interval);
   }, [fetchAlerts]);
 
