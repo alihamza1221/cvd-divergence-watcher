@@ -1,9 +1,31 @@
 import React from 'react';
-import { useAlerts, SYMBOLS, TIMEFRAMES } from '@/contexts/AlertContext';
+import { useAlerts, TIMEFRAMES } from '@/contexts/AlertContext';
 import { MatrixCell } from './MatrixCell';
+import { Loader2 } from 'lucide-react';
 
 export const MatrixGrid: React.FC = () => {
-  const { getAlert } = useAlerts();
+  const { getAlert, symbols, symbolsLoading, settings } = useAlerts();
+
+  // Helper to get alert with sweep filter applied
+  const getFilteredAlert = (symbol: string, timeframe: string) => {
+    const alert = getAlert(symbol, timeframe);
+    if (!alert) return undefined;
+    
+    // If showOnlySweeps is enabled, only return alerts with isDivWithSweep = true
+    if (settings.showOnlySweeps && !alert.isDivWithSweep) {
+      return undefined;
+    }
+    
+    return alert;
+  };
+
+  if (symbolsLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
 
   return (
     <div className="overflow-x-auto">
@@ -24,13 +46,13 @@ export const MatrixGrid: React.FC = () => {
           </tr>
         </thead>
         <tbody>
-          {SYMBOLS.map((symbol) => (
+          {symbols.map((symbol) => (
             <tr key={symbol} className="border-b border-border">
               <td className="sticky left-0 z-10 bg-background p-3 text-sm font-semibold text-primary">
                 {symbol}
               </td>
               {TIMEFRAMES.map((tf) => {
-                const alert = getAlert(symbol, tf);
+                const alert = getFilteredAlert(symbol, tf);
                 return (
                   <td key={`${symbol}-${tf}`} className="border border-border p-0">
                     <MatrixCell alert={alert} />

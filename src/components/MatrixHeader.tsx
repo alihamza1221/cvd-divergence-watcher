@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChevronDown, Settings } from 'lucide-react';
-import { useAlerts, SYMBOLS, TIMEFRAMES } from '@/contexts/AlertContext';
+import { useAlerts, TIMEFRAMES } from '@/contexts/AlertContext';
 import { Button } from '@/components/ui/button';
 import {
   Popover,
@@ -14,7 +14,7 @@ interface MatrixHeaderProps {
 }
 
 export const MatrixHeader: React.FC<MatrixHeaderProps> = ({ onToggleSettings, showSettings }) => {
-  const { currentTime } = useAlerts();
+  const { currentTime, symbols } = useAlerts();
 
   const formatDate = (date: Date) => {
     return date.toLocaleString('en-US', {
@@ -42,13 +42,13 @@ export const MatrixHeader: React.FC<MatrixHeaderProps> = ({ onToggleSettings, sh
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
-              Symbols ({SYMBOLS.length})
+              Symbols ({symbols.length})
               <ChevronDown className="h-4 w-4" />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-48 p-2" align="end">
             <div className="space-y-1">
-              {SYMBOLS.map((symbol) => (
+              {symbols.map((symbol) => (
                 <div
                   key={symbol}
                   className="px-3 py-2 text-sm rounded-md bg-muted/50 text-foreground"

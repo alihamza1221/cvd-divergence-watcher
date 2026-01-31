@@ -30,15 +30,24 @@ export const MatrixCell: React.FC<MatrixCellProps> = ({ alert }) => {
   return (
     <div
       className={cn(
-        'flex h-full min-h-[80px] flex-col items-center justify-center p-2 transition-all',
+        'relative flex h-full min-h-[80px] flex-col items-center justify-center p-2 transition-all',
         isBullish ? 'bg-matrix-bullish' : 'bg-matrix-bearish'
       )}
     >
-      {alert.active_session && (
-        <span className="mb-0.5 rounded bg-background/30  py-0.5 text-[10px] px-1 font-medium uppercase text-foreground">
-          {alert.active_session}
+      {/* Sweep indicator */}
+      {alert.isDivWithSweep && (
+        <span className="absolute top-1 left-1 rounded bg-white/20 px-1 py-0.5 text-[10px] font-bold text-white">
+          S
         </span>
       )}
+      
+      {/* Previous session name */}
+      {alert.previous_session && (
+        <span className="text-xs font-semibold text-white/90">
+          {alert.previous_session}
+        </span>
+      )}
+      
       <span className="text-sm font-bold text-white">
         {formatPrice(targetPrice)}
       </span>
