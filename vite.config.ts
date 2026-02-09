@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
-    allowedHosts: ["cvdd-matrix-production.up.railway.app"],
+    allowedHosts: ["funding-rate-backend-production.up.railway.app"],
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

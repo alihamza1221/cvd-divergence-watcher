@@ -30,8 +30,8 @@ export const MatrixHeader: React.FC<MatrixHeaderProps> = ({ onToggleSettings, sh
   return (
     <header className="flex items-center justify-between border-b border-border bg-card px-6 py-4">
       <div>
-        <h1 className="text-xl font-bold text-foreground">CVDD Matrix</h1>
-        <p className="text-sm text-muted-foreground">Real-time CVDD monitoring</p>
+        <h1 className="text-xl font-bold text-foreground">FRD Matrix</h1>
+        <p className="text-sm text-muted-foreground">Real-time FRD monitoring</p>
       </div>
 
       <div className="flex items-center gap-3">
