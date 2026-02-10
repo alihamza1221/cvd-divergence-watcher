@@ -45,6 +45,29 @@ const AlertContext = createContext<AlertContextType | undefined>(undefined);
 const DEFAULT_SYMBOLS = ['BTC', 'ETH', 'BNB', 'SOL', 'SUI', 'XRP'];
 const TIMEFRAMES = ['15m', '10m', '5m', '3m', '2m', '1m', '45s', '30s', '15s', '10s'];
 
+// Normalize symbol by removing "USDT" and ".P" suffixes (e.g., "BTCUSDT.P" → "BTC")
+const normalizeSymbol = (symbol: string): string => {
+  return symbol.replace(/USDT/i, '').replace(/\.P$/i, '');
+};
+
+// Normalize timeframe to match TIMEFRAMES format (e.g., "1" → "1m", "45" → "45s")
+const normalizeTimeframe = (timeframe: string): string => {
+  // If already has suffix, return as-is
+  if (/[ms]$/i.test(timeframe)) {
+    return timeframe.toLowerCase();
+  }
+  // Check if it matches a minute timeframe
+  if (TIMEFRAMES.includes(`${timeframe}m`)) {
+    return `${timeframe}m`;
+  }
+  // Check if it matches a second timeframe
+  if (TIMEFRAMES.includes(`${timeframe}s`)) {
+    return `${timeframe}s`;
+  }
+  // Fallback: assume minutes for values <= 15, seconds otherwise
+  return parseInt(timeframe) <= 15 ? `${timeframe}m` : `${timeframe}s`;
+};
+
 export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [alerts, setAlerts] = useState<Map<string, CVDAlert>>(new Map());
   const [settings, setSettings] = useState<Settings>({
@@ -91,7 +114,10 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         const response = await fetch(`${BACKEND_URL}/api/symbols`);
         if (response.ok) {
           const data = await response.json();
-          setSymbols(data.symbols ?? DEFAULT_SYMBOLS);
+          const rawSymbols: string[] = data.symbols ?? DEFAULT_SYMBOLS;
+          // Normalize and deduplicate symbols
+          const normalizedSymbols = [...new Set(rawSymbols.map(normalizeSymbol))];
+          setSymbols(normalizedSymbols);
         }
       } catch (err) {
         console.error('Failed to fetch symbols from backend:', err);
@@ -149,16 +175,18 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   const addAlert = useCallback((alert: CVDAlert) => {
-    const key = `${alert.symbol}-${alert.timeframe}`;
+    const normalizedSymbol = normalizeSymbol(alert.symbol);
+    const normalizedTimeframe = normalizeTimeframe(alert.timeframe);
+    const key = `${normalizedSymbol}-${normalizedTimeframe}`;
     setAlerts((prev) => {
       const newAlerts = new Map(prev);
-      newAlerts.set(key, { ...alert, receivedAt: Date.now() });
+      newAlerts.set(key, { ...alert, symbol: normalizedSymbol, timeframe: normalizedTimeframe, receivedAt: Date.now() });
       return newAlerts;
     });
     // Add symbol if not already in list
     setSymbols((prev) => {
-      if (!prev.includes(alert.symbol)) {
-        return [...prev, alert.symbol];
+      if (!prev.includes(normalizedSymbol)) {
+        return [...prev, normalizedSymbol];
       }
       return prev;
     });
@@ -166,7 +194,9 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const getAlert = useCallback(
     (symbol: string, timeframe: string): CVDAlert | undefined => {
-      const key = `${symbol}-${timeframe}`;
+      const normalizedSymbol = normalizeSymbol(symbol);
+      const normalizedTimeframe = normalizeTimeframe(timeframe);
+      const key = `${normalizedSymbol}-${normalizedTimeframe}`;
       return alerts.get(key);
     },
     [alerts]
