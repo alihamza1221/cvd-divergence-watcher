@@ -40,6 +40,13 @@ export const MatrixCell: React.FC<MatrixCellProps> = ({ alert }) => {
           S
         </span>
       )}
+
+      {/* Exchange badge */}
+      {alert.exchange && (
+        <span className="absolute top-1 right-1 rounded bg-white/20 px-1 py-0.5 text-[10px] font-bold uppercase text-white">
+          {alert.exchange === 'BYBIT' ? 'BB' : alert.exchange === 'BINANCE' ? 'BN' : alert.exchange}
+        </span>
+      )}
       
       {/* Previous session name */}
       {alert.previous_session && (

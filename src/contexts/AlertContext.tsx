@@ -15,6 +15,7 @@ export interface CVDAlert {
   isDivWithSweep: boolean;
   time: string;
   message: string;
+  exchange?: string;
   receivedAt: number;
 }
 
