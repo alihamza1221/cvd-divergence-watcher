@@ -105,3 +105,12 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
+
+/* Hide scrollbar while keeping scroll functionality */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}

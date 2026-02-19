@@ -149,7 +149,7 @@ export const SettingsSidebar: React.FC = () => {
   };
 
   return (
-    <div className="flex h-full w-64 flex-col border-l border-border bg-sidebar p-4 overflow-y-auto">
+    <div className="flex h-full w-96 flex-col border-l border-border bg-sidebar p-4 overflow-y-auto scrollbar-none">
       <div className="mb-6 flex items-center gap-2">
         <Settings className="h-5 w-5 text-primary" />
         <h2 className="text-lg font-semibold text-foreground">Settings</h2>
@@ -189,6 +189,32 @@ export const SettingsSidebar: React.FC = () => {
                 checked={settings.showOnlySweeps}
                 onCheckedChange={(checked) => updateSettings({ showOnlySweeps: checked })}
               />
+            </div>
+
+            {/* Exchange Filter */}
+            <div className="space-y-2">
+              <Label className="text-sm text-foreground">Exchange Filter</Label>
+              <p className="text-[10px] text-muted-foreground">
+                Show divergences from selected exchanges
+              </p>
+              <div className="flex gap-2 mt-1">
+                <Button
+                  size="sm"
+                  variant={settings.showBybit ? 'default' : 'outline'}
+                  onClick={() => updateSettings({ showBybit: !settings.showBybit })}
+                  className={`flex-1 h-8 text-xs font-bold ${settings.showBybit ? 'bg-orange-500 hover:bg-orange-600 text-white' : 'text-muted-foreground'}`}
+                >
+                  Bybit
+                </Button>
+                <Button
+                  size="sm"
+                  variant={settings.showBinance ? 'default' : 'outline'}
+                  onClick={() => updateSettings({ showBinance: !settings.showBinance })}
+                  className={`flex-1 h-8 text-xs font-bold ${settings.showBinance ? 'bg-yellow-500 hover:bg-yellow-600 text-black' : 'text-muted-foreground'}`}
+                >
+                  Binance
+                </Button>
+              </div>
             </div>
 
             {/* Telegram Configuration */}

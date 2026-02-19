@@ -15,6 +15,13 @@ export const MatrixGrid: React.FC = () => {
     if (settings.showOnlySweeps && !alert.isDivWithSweep) {
       return undefined;
     }
+
+    // Filter by exchange
+    if (alert.exchange) {
+      const ex = alert.exchange.toUpperCase();
+      if (ex === 'BYBIT' && !settings.showBybit) return undefined;
+      if (ex === 'BINANCE' && !settings.showBinance) return undefined;
+    }
     
     return alert;
   };
@@ -29,15 +36,16 @@ export const MatrixGrid: React.FC = () => {
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[900px] border-collapse">
+      <table className="w-full min-w-[900px] border-collapse table-fixed">
         <thead>
           <tr>
-            <th className="sticky left-0 z-10 bg-background p-3 text-left text-sm font-medium text-muted-foreground">
+            <th className="sticky left-0 z-10 w-16 bg-background px-2 py-3 text-left text-sm font-medium text-muted-foreground">
               {/* Empty corner cell */}
             </th>
             {TIMEFRAMES.map((tf) => (
               <th
                 key={tf}
+                style={{ width: `${(100 - 8) / TIMEFRAMES.length}%` }}
                 className="border-b border-border bg-background p-3 text-center text-sm font-medium text-muted-foreground"
               >
                 {tf}
@@ -48,7 +56,7 @@ export const MatrixGrid: React.FC = () => {
         <tbody>
           {symbols.map((symbol) => (
             <tr key={symbol} className="border-b border-border">
-              <td className="sticky left-0 z-10 bg-background p-3 text-sm font-semibold text-primary">
+              <td className="sticky left-0 z-10 w-16 bg-background px-2 py-3 text-sm font-semibold text-muted-foreground">
                 {symbol}
               </td>
               {TIMEFRAMES.map((tf) => {

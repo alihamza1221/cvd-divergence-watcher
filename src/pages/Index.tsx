@@ -45,7 +45,7 @@ const Index = () => {
       <MatrixHeader onToggleSettings={() => setShowSettings(!showSettings)} showSettings={showSettings} />
       
       <div className="flex flex-1 overflow-hidden">
-        <main className="flex-1 overflow-auto p-4">
+        <main className="flex-1 overflow-auto p-4 scrollbar-none" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
           <MatrixGrid />
         </main>
         

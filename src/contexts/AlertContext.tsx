@@ -27,6 +27,8 @@ interface Settings {
   telegramChatId: string;
   telegramConfigured: boolean;
   showOnlySweeps: boolean; // Only show alerts with sweeps
+  showBybit: boolean; // Show Bybit exchange alerts
+  showBinance: boolean; // Show Binance exchange alerts
 }
 
 interface AlertContextType {
@@ -44,7 +46,7 @@ interface AlertContextType {
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
 
 const DEFAULT_SYMBOLS = ['BTC', 'ETH', 'BNB', 'SOL', 'SUI', 'XRP'];
-const TIMEFRAMES = ['15m', '10m', '5m', '3m', '2m', '1m', '45s', '30s', '15s', '10s'];
+const TIMEFRAMES = ['1m', '5m', '15m'];
 
 // Normalize symbol by removing "USDT" and ".P" suffixes (e.g., "BTCUSDT.P" → "BTC")
 const normalizeSymbol = (symbol: string): string => {
@@ -79,6 +81,8 @@ export const AlertProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     telegramChatId: '',
     telegramConfigured: false,
     showOnlySweeps: false,
+    showBybit: true,
+    showBinance: true,
   });
   const [settingsLoading, setSettingsLoading] = useState(true);
   const [symbols, setSymbols] = useState<string[]>(DEFAULT_SYMBOLS);
